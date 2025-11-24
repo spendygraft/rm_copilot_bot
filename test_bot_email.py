@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def test_simple_email():
+def test_simple_email(recipient_email):
     """Test sending a simple email"""
     print("\n" + "="*60)
     print("🧪 TEST 1: Simple Text Email")
@@ -16,9 +16,9 @@ def test_simple_email():
     gmail = get_gmail_service()
     
     result = gmail.send_email(
-        to='scott.pendygraft@telostravel.ai',  # Send to yourself
+        to=recipient_email,
         subject='✅ Test: Bot Service Account Working',
-        body_text='''Hello Scott,
+        body_text='''Hello,
 
 This email confirms that your bot-service account is properly configured and sending emails as rm.copilot@telostravel.ai.
 
@@ -36,10 +36,10 @@ RM Copilot Bot
     )
     
     print(f"✅ Email sent! Message ID: {result['id']}")
-    print(f"📧 Check your inbox at scott.pendygraft@telostravel.ai")
+    print(f"📧 Check your inbox at {recipient_email}")
 
 
-def test_html_email():
+def test_html_email(recipient_email):
     """Test sending an HTML email"""
     print("\n" + "="*60)
     print("🧪 TEST 2: HTML Email with Styling")
@@ -93,7 +93,7 @@ def test_html_email():
     '''
     
     result = gmail.send_email(
-        to='scott.pendygraft@telostravel.ai',
+        to=recipient_email,
         subject='🎨 Test: HTML Email with Styling',
         body_text='This is the plain text fallback.',
         body_html=html_body
@@ -102,7 +102,7 @@ def test_html_email():
     print(f"✅ HTML email sent! Message ID: {result['id']}")
 
 
-def test_email_with_cc_bcc():
+def test_email_with_cc_bcc(recipient_email):
     """Test sending email with CC and BCC"""
     print("\n" + "="*60)
     print("🧪 TEST 3: Email with CC and BCC")
@@ -111,8 +111,8 @@ def test_email_with_cc_bcc():
     gmail = get_gmail_service()
     
     result = gmail.send_email(
-        to='scott.pendygraft@telostravel.ai',
-        cc='scott.pendygraft@telostravel.ai',  # You can add other emails here
+        to=recipient_email,
+        cc=recipient_email,
         subject='📋 Test: Email with CC',
         body_text='This email tests CC functionality. Check that you received it in both TO and CC.'
     )
@@ -129,22 +129,32 @@ def run_all_tests():
     print(f"   Impersonating: {Config.IMPERSONATE_USER}")
     print(f"   Sending From: {Config.SEND_FROM_EMAIL}")
     print(f"   Service Account: {Config.SERVICE_ACCOUNT_FILE}")
-    
+
+    # Prompt user for recipient email
+    print("\n" + "="*60)
+    recipient_email = input("📧 Enter the recipient email address for tests: ").strip()
+
+    if not recipient_email:
+        print("❌ No email address provided. Exiting.")
+        return
+
+    print(f"✅ All test emails will be sent to: {recipient_email}")
+
     try:
-        test_simple_email()
+        test_simple_email(recipient_email)
         input("\n✅ Test 1 complete. Press Enter to continue to Test 2...")
-        
-        test_html_email()
+
+        test_html_email(recipient_email)
         input("\n✅ Test 2 complete. Press Enter to continue to Test 3...")
-        
-        test_email_with_cc_bcc()
-        
+
+        test_email_with_cc_bcc(recipient_email)
+
         print("\n" + "="*60)
         print("🎉 ALL TESTS COMPLETED SUCCESSFULLY!")
         print("="*60)
         print("\n✅ Your bot email system is fully operational!")
-        print(f"📧 Check your inbox at scott.pendygraft@telostravel.ai for all test emails")
-        
+        print(f"📧 Check your inbox at {recipient_email} for all test emails")
+
     except Exception as e:
         print(f"\n❌ Test failed: {e}")
         logger.exception("Test error:")
