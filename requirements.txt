@@ -1,0 +1,13 @@
+# Telos Email Service Bot - Requirements
+# Gmail API and Authentication
+google-auth>=2.25.0
+google-auth-oauthlib>=1.2.0
+google-auth-httplib2>=0.2.0
+google-api-python-client>=2.110.0
+
+# HTTP and API support (included with google-api-python-client but explicit for clarity)
+httplib2>=0.22.0
+uritemplate>=4.1.1
+
+# Additional utilities (if needed for future enhancements)
+# python-dotenv>=1.0.0  # Uncomment if you want to use .env files for configuration
